@@ -5,7 +5,7 @@ var UserSchema = Schema({
     email: {type: String, required: true},
     password: {type: String, required: true},
     type: ['user','shop','admin'],
-    rif: {type: String, default: false},
+    rif: {type: String, required: false},
     custom: String,
     tlfn: Number,
     name: String,
