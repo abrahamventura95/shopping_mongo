@@ -10,4 +10,10 @@ router.get('/shop', Controller.getAllByShop);
 router.get('/', Controller.get);
 router.put('/', auth.ensureAuthenticated, auth.isShop, Controller.update);
 router.delete('/', auth.ensureAuthenticated, auth.isShop, Controller.delete);
+
+router.post('/category', auth.ensureAuthenticated, auth.isAdmin, Controller.createCtgr);
+router.get('/category/all', Controller.getAllCtgr);
+router.put('/category', auth.ensureAuthenticated, auth.isAdmin, Controller.updateCtgr);
+router.delete('/category', auth.ensureAuthenticated, auth.isAdmin, Controller.deleteCtgr);
+
 module.exports = router;

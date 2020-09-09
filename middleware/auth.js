@@ -15,3 +15,8 @@ exports.isShop = function(req, res, next){
 	if(req.user.type != 'shop') return res.sendStatus(403);
     next();			    
 }
+
+exports.isAdmin = function(req, res, next){
+    if(req.user.type != 'admin') return res.sendStatus(403);
+    next();                
+}
