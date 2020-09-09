@@ -1,6 +1,7 @@
 const error_types   = require('./error_types');
 const Product       = require('../Models/product');
 const Category      = require('../Models/category');
+const PCategory      = require('../Models/pcategory');
 
 let controller = {
     create: (req, res, next) => {
@@ -88,6 +89,58 @@ let controller = {
     },
     deleteCtgr: (req, res, next) => {
         Category.deleteOne({_id:req.param('id')})
+             .then(data=>{
+                res.json(data)
+             })
+             .catch(err=>{res.json(err)}) 
+    },
+    createProductCtgr: (req, res, next) => {
+        Product.findOne({_id: req.body.product})
+               .then(product=>{
+                   console.log('test');
+                   if(product.shop_id == req.user.sub){
+                       let document = new PCategory({
+                            product_id:  req.body.product,
+                            category_id: req.body.category
+                        }); 
+                        document.save()
+                                .then(data => res.json({data: data}))
+                                .catch(err => next(err));
+                   }else{
+                       throw new error_types.InfoError('Only Product owner');
+                   }
+               })
+               .catch(err=>{res.json(err)});
+        
+    },
+    getProductCtgr: (req, res, next) => {
+        PCategory.find({product_id: req.param('id')})
+                 .then(data=>{
+                     categoriesIDs = data.map(function (data) { return data.category_id; });
+                        Category.find({
+                                        '_id': { $in: categoriesIDs}})
+                                .sort({name: -1})
+                                .then(ctgrs=>{
+                                    res.json(ctgrs);
+                                })
+                                .catch(err=>{res.json(err)});
+                 });
+    },
+    getCtgrProduct: (req, res, next) => {
+        PCategory.find({category_id: req.param('id')})
+                 .then(data=>{
+                     productsIDs = data.map(function (data) { return data.product_id; });
+                        Product.find({
+                                        '_id': { $in: productsIDs}})
+                                .sort({name: -1})
+                                .then(products=>{
+                                    res.json(products);
+                                })
+                                .catch(err=>{res.json(err)});
+                 });
+    },
+    deleteProductCtgr: (req, res, next) => {
+        PCategory.deleteOne({_id:req.param('id')})
              .then(data=>{
                 res.json(data)
              })
