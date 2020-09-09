@@ -1,7 +1,8 @@
 const error_types   = require('./error_types');
 const Product       = require('../Models/product');
 const Category      = require('../Models/category');
-const PCategory      = require('../Models/pcategory');
+const PCategory     = require('../Models/pcategory');
+const Offer         = require('../Models/offer');
 
 let controller = {
     create: (req, res, next) => {
@@ -141,6 +142,38 @@ let controller = {
     },
     deleteProductCtgr: (req, res, next) => {
         PCategory.deleteOne({_id:req.param('id')})
+             .then(data=>{
+                res.json(data)
+             })
+             .catch(err=>{res.json(err)}) 
+    },
+    createOffer: (req, res, next) => {
+        if (req.body.name == undefined){
+            throw new error_types.InfoError('Name is required');
+        }else{
+            let document = new Offer({
+                shop_id:     req.user.sub,
+                name:        req.body.name,
+                description: req.body.description || '',
+                price:       req.body.price       || 0,
+                image:       req.body.image       || '',
+                until:       req.body.until
+            }); 
+            document.save().then(data => res.json({data: data})).catch(err => next(err));
+        }
+    },
+    searchOffer: (req, res, next) => {
+        Offer.find({name: {$regex: req.param('name'), $options: 'i'}})
+            .sort({name: -1})
+            .then(data=>res.json(data));
+    },
+    getOffers: (req, res, next) => {
+        Offer.find({})
+            .sort({name: -1})
+            .then(data=>res.json(data));
+    },
+    deleteOffer: (req, res, next) => {
+        Offer.deleteOne({_id:req.param('id')})
              .then(data=>{
                 res.json(data)
              })

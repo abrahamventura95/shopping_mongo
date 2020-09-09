@@ -16,10 +16,14 @@ router.get('/category/all', Controller.getAllCtgr);
 router.put('/category', auth.ensureAuthenticated, auth.isAdmin, Controller.updateCtgr);
 router.delete('/category', auth.ensureAuthenticated, auth.isAdmin, Controller.deleteCtgr);
 
-
 router.post('/pcategory', auth.ensureAuthenticated, auth.isShop, Controller.createProductCtgr);
 router.get('/pcategory/product', Controller.getProductCtgr);
 router.get('/pcategory/category', Controller.getCtgrProduct);
 router.delete('/pcategory', auth.ensureAuthenticated, auth.isShop, Controller.deleteProductCtgr);
+
+router.post('/offer', auth.ensureAuthenticated, auth.isShop, Controller.createOffer);
+router.get('/offer', Controller.searchOffer);
+router.get('/offers', Controller.getOffers);
+router.delete('/offer', auth.ensureAuthenticated, auth.isShop, Controller.deleteOffer);
 
 module.exports = router;
